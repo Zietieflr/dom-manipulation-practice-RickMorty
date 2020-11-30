@@ -1,0 +1,61 @@
+body {
+  background-color: hsl(60, 10%, 80%);
+  padding: 1rem;
+}
+
+h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 2rem;
+  margin-left: 1rem;
+  margin-bottom: .5rem;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+#characters-container {
+  display: inline-flex;
+  flex-wrap: wrap;
+  max-width: 100%;
+  padding-left: 1rem;
+}
+
+.character-container {
+  padding: .7rem;
+  margin: .3rem;
+  width: 175px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 8px -5px hsl(0, 0%, 0%);
+}
+
+.basic-info {
+  list-style-type: none;
+}
+
+.basic-info li {
+  background-image: url("https://img.pngio.com/rick-and-morty-portal-png-banner-transparent-portal-rick-and-rick-and-morty-transparent-background-1190_1185.png");
+  background-position: 0 0;
+  background-size: 1rem 1rem;
+  background-repeat: no-repeat;
+  padding-left: 1.25rem;
+  line-height: 1.15rem;
+}
+
+.alive {
+  background-color: hsla(120, 50%, 50%, .1);
+}
+
+.dead {
+  background-color: hsla(0, 50%, 50%, .1);
+}
+
+img {
+  border-radius: 6px;
+  margin-bottom: 5px;
+  box-shadow: 2px 2px 8px -5px hsl(0, 0%, 50%);
+}

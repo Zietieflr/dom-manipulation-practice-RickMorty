@@ -8,7 +8,6 @@ fetch(characterAPI)
 
 function populatePage(allResults) {
   let { info, results } = allResults;
-  console.log(info, results)
   assignCharacters(results);
   assignInfo(info);
 }

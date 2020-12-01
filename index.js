@@ -1,17 +1,20 @@
 const characterAPI = "https://rickandmortyapi.com/api/character";
 const $characterList = document.getElementById("characters-container");
+const $changeCharacters = document.getElementsByClassName("other-characters");
 
 fetch(characterAPI)
   .then(response => response.json())
-  .then(results => populatePage(results))
+  .then(results => populatePage(results));
 
 function populatePage(allResults) {
   let { info, results } = allResults;
-  // assignInfo(info);
+  console.log(info, results)
   assignCharacters(results);
+  assignInfo(info);
 }
 
 function assignCharacters(characters) {
+  $characterList.innerHTML = "";
   characters.forEach(character => characterInfo(character));
 }
 
@@ -38,4 +41,62 @@ function characterInfo(character) {
   $basicInfo.append($location, $species, $gender);
   $container.append($image, $name, $basicInfo);
   $characterList.append($container);
+}
+
+function assignInfo(info) {
+  const { count, pages, next, prev } = info;
+  $changeCharacters[0].innerHTML = "";
+  $changeCharacters[1].innerHTML = "";
+  $changeCharacters[0].append(
+    renderNavigation("Previous", prev),
+    navigationDescription(pages, count, next),
+    renderNavigation("Next", next)
+  );
+  $changeCharacters[1].append(
+    renderNavigation("Previous", prev),
+    navigationDescription(pages, count, next),
+    renderNavigation("Next", next)
+  );
+}
+
+function renderNavigation(text, address) {
+  return address ? pageNavigation(text, address) : navigationPlaceHolder(text);
+}
+
+function pageNavigation(text, address) {
+  const $rotation = document.createElement("button");
+  $rotation.textContent = text;
+  onClickGET($rotation, address);
+  return $rotation;
+}
+
+function navigationPlaceHolder(text) {
+  const $placeHolder = document.createElement("p");
+  $placeHolder.innerText = text;
+  $placeHolder.className = "nav-placeholder";
+  return $placeHolder;
+}
+
+function navigationDescription(pages, count, nextAddress) {
+  const $description = document.createElement("p");
+  const currentPage = nextAddress ? calculatePage(nextAddress) : pages;
+  const startCount = ((currentPage-1)*20)+1;
+  const endCount = startCount+19<count ? startCount+19 : count;
+  $description.innerText = `Page ${currentPage} of ${pages}. `
+    +`Displaying ${startCount}-${endCount} of ${count}.`;
+  return $description;
+}
+
+function calculatePage(pageAddress) {
+  const nextPage = parseInt(pageAddress.split("page=")[1]);
+  return nextPage-1;
+}
+
+function onClickGET($trigger, address) {
+  $trigger.addEventListener("click", (event) => {
+    event.preventDefault();
+    fetch(address)
+      .then(response => response.json())
+      .then(results => populatePage(results));
+  })
 }

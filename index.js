@@ -80,9 +80,10 @@ function navigationPlaceHolder(text) {
 function navigationDescription(pages, count, nextAddress) {
   const $description = document.createElement("p");
   const currentPage = nextAddress ? calculatePage(nextAddress) : pages;
-  const currentCount = ((currentPage-1)*20)+1;
+  const startCount = ((currentPage-1)*20)+1;
+  const endCount = startCount+19<count ? startCount+19 : count;
   $description.innerText = `Page ${currentPage} of ${pages}. `
-    +`Displaying ${currentCount}-${currentCount+19} of ${count}.`;
+    +`Displaying ${startCount}-${endCount} of ${count}.`;
   return $description;
 }
 

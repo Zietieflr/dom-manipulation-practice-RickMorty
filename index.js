@@ -4,7 +4,7 @@ const $changeCharacters = document.getElementsByClassName("other-characters");
 
 fetch(characterAPI)
   .then(response => response.json())
-  .then(results => populatePage(results))
+  .then(results => populatePage(results));
 
 function populatePage(allResults) {
   let { info, results } = allResults;
@@ -14,6 +14,7 @@ function populatePage(allResults) {
 }
 
 function assignCharacters(characters) {
+  $characterList.innerHTML = "";
   characters.forEach(character => characterInfo(character));
 }
 
@@ -44,25 +45,57 @@ function characterInfo(character) {
 
 function assignInfo(info) {
   const { count, pages, next, prev } = info;
-  const $previousRotation1 = document.createElement("button");
-  const $nextRotation1 = document.createElement("button");
-  const $previousRotation2 = document.createElement("button");
-  const $nextRotation2 = document.createElement("button");
-  $previousRotation1.textContent = "Previous";
-  $nextRotation1.textContent = "Next";
-  $previousRotation2.textContent = "Previous";
-  $nextRotation2.textContent = "Next";
-  const $description1 = document.createElement("p");
-  const $description2 = document.createElement("p");
-  const currentPage = next ? calculatePage(next) : pages;
+  $changeCharacters[0].innerHTML = "";
+  $changeCharacters[1].innerHTML = "";
+  $changeCharacters[0].append(
+    renderNavigation("Previous", prev),
+    navigationDescription(pages, count, next),
+    renderNavigation("Next", next)
+  );
+  $changeCharacters[1].append(
+    renderNavigation("Previous", prev),
+    navigationDescription(pages, count, next),
+    renderNavigation("Next", next)
+  );
+}
+
+function renderNavigation(text, address) {
+  return address ? pageNavigation(text, address) : navigationPlaceHolder(text);
+}
+
+function pageNavigation(text, address) {
+  const $rotation = document.createElement("button");
+  $rotation.textContent = text;
+  onClickGET($rotation, address);
+  return $rotation;
+}
+
+function navigationPlaceHolder(text) {
+  const $placeHolder = document.createElement("p");
+  $placeHolder.innerText = text;
+  $placeHolder.className = "nav-placeholder";
+  return $placeHolder;
+}
+
+function navigationDescription(pages, count, nextAddress) {
+  const $description = document.createElement("p");
+  const currentPage = nextAddress ? calculatePage(nextAddress) : pages;
   const currentCount = ((currentPage-1)*20)+1;
-  $description1.innerText = `Page ${currentPage} of ${pages}. Displaying ${currentCount}-${currentCount+19} of ${count}.`
-  $description2.innerText = `Page ${currentPage} of ${pages}. Displaying ${currentCount}-${currentCount+19} of ${count}.`
-  $changeCharacters[0].append($previousRotation1, $description1, $nextRotation1);
-  $changeCharacters[1].append($previousRotation2, $description2, $nextRotation2);
+  $description.innerText = `Page ${currentPage} of ${pages}. `
+    +`Displaying ${currentCount}-${currentCount+19} of ${count}.`;
+  return $description;
 }
 
 function calculatePage(pageAddress) {
   const nextPage = parseInt(pageAddress.split("page=")[1]);
   return nextPage-1;
+}
+
+function onClickGET($trigger, address) {
+  $trigger.addEventListener("click", (event) => {
+    event.preventDefault();
+    fetch(address)
+      .then(response => response.json())
+      .then(results => populatePage(results));
+  })
 }

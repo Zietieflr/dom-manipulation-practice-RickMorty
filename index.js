@@ -1,6 +1,6 @@
 const characterAPI = "https://rickandmortyapi.com/api/character";
-const $characterList = document.getElementById("characters-container");
-const $changeCharacters = document.getElementsByClassName("other-characters");
+const $characterList = document.querySelector("#characters-container");
+const $changeCharacters = document.querySelectorAll(".other-characters");
 
 fetch(characterAPI)
   .then(response => response.json())
@@ -20,42 +20,51 @@ function assignCharacters(characters) {
 function characterInfo(character) {
   const { name, species, location, image, gender, status } = character;
 
-  const $container = document.createElement("li");
-    $container.className = `character-container ${status.toLowerCase()}`;
-  const $name = document.createElement("h3");
-    $name.textContent = name;
-  const $image = document.createElement("img");
-    $image.src = image;
-    $image.width = 150;
-    $image.alt = `Portrait of ${name}, a ${species} on Rick and Morty`;
-  const $basicInfo = document.createElement("ul");
-    $basicInfo.className = "basic-info";
-  const $location = document.createElement("li");
-    $location.textContent = location.name;
-  const $species = document.createElement("li");
-    $species.textContent = species;
-  const $gender = document.createElement("li");
-    $gender.textContent = gender;
+  const $container = createElementEditProperties("li", {
+    className: `character-container ${status.toLowerCase()}`
+  });
+  const $name = createElementEditProperties("li", {textContent: name});
+  const $image = createElementEditProperties("img", {
+    src: image,
+    width: 150,
+    alt: `Portrait of ${name}, a ${species} on Rick and Morty`
+  });
+  const $basicInfo = createElementEditProperties("ul", {
+    className: "basic-info"
+  });
+  const $location = createElementEditProperties("li", {
+    textContent: location.name
+  });
+  const $species = createElementEditProperties("li", {
+    textContent: species
+  });
+  const $gender = createElementEditProperties("li", {
+    textContent: gender
+  });
 
   $basicInfo.append($location, $species, $gender);
   $container.append($image, $name, $basicInfo);
   $characterList.append($container);
 }
 
+function createElementEditProperties(type, properties) {
+  const $element = document.createElement(type);
+  for (const [key, value] of Object.entries(properties)) {
+    $element[key] = value;
+  };
+  return $element;
+}
+
 function assignInfo(info) {
   const { count, pages, next, prev } = info;
-  $changeCharacters[0].innerHTML = "";
-  $changeCharacters[1].innerHTML = "";
-  $changeCharacters[0].append(
-    renderNavigation("Previous", prev),
-    navigationDescription(pages, count, next),
-    renderNavigation("Next", next)
-  );
-  $changeCharacters[1].append(
-    renderNavigation("Previous", prev),
-    navigationDescription(pages, count, next),
-    renderNavigation("Next", next)
-  );
+  $changeCharacters.forEach($changeCharacter => {
+    $changeCharacter.innerHTML = "";
+    $changeCharacter.append(
+      renderNavigation("Previous", prev),
+      navigationDescription(pages, count, next),
+      renderNavigation("Next", next)
+    );
+  });
 }
 
 function renderNavigation(text, address) {
